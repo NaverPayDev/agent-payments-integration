@@ -35,12 +35,12 @@
         "clean": "rm -rf build",
         "prebuild": "pnpm clean",
         "build": "tsc && node -e \"require('fs').chmodSync('build/index.js', '755')\"",
-        "test": "vitest run --reporter=verbose",
-        "test:watch": "vitest watch --reporter=verbose",
+        "test": "NODE_ENV=development vitest run --reporter=verbose",
+        "test:watch": "NODE_ENV=development vitest watch --reporter=verbose",
         "start": "concurrently 'pnpm run start:test-server' 'pnpm run start:inspector:dev'",
-        "start:inspector": "npx @modelcontextprotocol/inspector vite-node src/index.ts",
-        "start:inspector:dev": "NODE_ENV=development npx @modelcontextprotocol/inspector vite-node src/index.ts",
-        "start:test-server": "vite-node test/__helpers__/start-test-server.ts",
+        "start:inspector": "npx @modelcontextprotocol/inspector --config mcp.json --server npay-payments",
+        "start:inspector:dev": "npx @modelcontextprotocol/inspector --config mcp.json --server npay-payments-test",
+        "start:test-server": "NODE_ENV=development vite-node test/__helpers__/start-test-server.ts",
         "notice": "npx generate-license-file --input package.json --output NOTICE.md --overwrite --ci --no-spinner --eol lf"
     },
     "devDependencies": {
