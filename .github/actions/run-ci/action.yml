@@ -15,9 +15,9 @@ runs:
               pnpm run lint
               pnpm run markdownlint
 
-        - name: Run tests
+        - name: Run tests with coverage
           shell: bash
-          run: pnpm run test
+          run: pnpm run test:coverage
 
         - name: Build
           shell: bash

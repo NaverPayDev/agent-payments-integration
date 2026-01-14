@@ -37,6 +37,7 @@
         "build": "tsc -p tsconfig.build.json && node -e \"require('fs').chmodSync('build/index.js', '755')\"",
         "test": "NODE_ENV=development vitest run --reporter=verbose",
         "test:watch": "NODE_ENV=development vitest watch --reporter=verbose",
+        "test:coverage": "NODE_ENV=development vitest run --coverage",
         "start": "concurrently 'pnpm run start:test-server' 'pnpm run start:inspector:dev'",
         "start:inspector": "npx @modelcontextprotocol/inspector --config mcp.json --server npay-payments",
         "start:inspector:dev": "npx @modelcontextprotocol/inspector --config mcp.json --server npay-payments-test",

@@ -23,6 +23,7 @@
         "start": "turbo run start",
         "build": "turbo run build",
         "test": "turbo run test",
+        "test:coverage": "turbo run test:coverage",
         "lint": "turbo run lint && eslint '**/*.{js,jsx,ts,tsx}'",
         "lint:fix": "turbo run lint:fix && eslint '**/*.{js,jsx,ts,tsx}' --fix",
         "prettier": "prettier --check '**/*.{json,yaml,md,ts,tsx,js,jsx}'",
