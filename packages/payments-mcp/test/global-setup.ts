@@ -6,11 +6,11 @@
 
 import {createTestServer} from './__helpers__/test-server.js'
 
-process.env.NODE_ENV = 'development'
-
-const testServer = createTestServer()
-
 export default async function setup() {
+    process.env.NODE_ENV = 'development'
+    process.env.NPAY_DEVELOPERS_DOCS_URL = 'http://localhost:3001/developers'
+
+    const testServer = createTestServer()
     await testServer.start()
 
     return async () => {

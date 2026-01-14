@@ -8,5 +8,13 @@ export default defineConfig({
         include: ['test/**/*.test.ts'],
         testTimeout: 11_000,
         hookTimeout: 11_000,
+        coverage: {
+            include: ['src/**/*.ts'],
+            thresholds: {
+                statements: 80,
+                branches: 80,
+                lines: 80,
+            },
+        },
     },
 })

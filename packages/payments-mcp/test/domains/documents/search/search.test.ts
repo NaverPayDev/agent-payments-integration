@@ -6,7 +6,7 @@
 
 import {describe, it, expect} from 'vitest'
 
-import {searchDocuments} from '../../../../src/domains/documents/servies/search/search.js'
+import {searchDocuments} from '../../../../src/domains/documents/services/search/search.js'
 
 describe('search', () => {
     describe('searchDocuments()', () => {

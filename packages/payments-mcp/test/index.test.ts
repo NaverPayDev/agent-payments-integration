@@ -6,11 +6,16 @@
 
 import {mkdir, writeFile, rm} from 'fs/promises'
 import path from 'path'
+import {fileURLToPath} from 'url'
 
 import {Client} from '@modelcontextprotocol/sdk/client/index.js'
-import {StdioClientTransport} from '@modelcontextprotocol/sdk/client/stdio.js'
+import {InMemoryTransport} from '@modelcontextprotocol/sdk/inMemory.js'
 import {CallToolResult} from '@modelcontextprotocol/sdk/types.js'
 import {describe, it, expect, beforeEach, beforeAll, afterAll} from 'vitest'
+
+import {createServer} from '../src/infrastructure/server.js'
+
+const currentDir = path.dirname(fileURLToPath(import.meta.url))
 
 describe('payments-mcp', () => {
     const client = new Client({
@@ -19,15 +24,9 @@ describe('payments-mcp', () => {
     })
 
     beforeAll(async () => {
-        const transport = new StdioClientTransport({
-            command: 'vite-node',
-            args: [path.resolve(__dirname, '../src/index.ts')],
-            env: {
-                ...process.env,
-                NODE_ENV: 'development',
-            },
-        })
-        await client.connect(transport)
+        const server = createServer()
+        const [clientTransport, serverTransport] = InMemoryTransport.createLinkedPair()
+        await Promise.all([client.connect(clientTransport), server.connect(serverTransport)])
     })
 
     afterAll(async () => {
@@ -65,15 +64,21 @@ describe('payments-mcp', () => {
         describe('callTool()', () => {
             describe('get_document()', () => {
                 describe('categoryId가 잘못된 값이라면', () => {
-                    it('McpError를 던진다', async () => {
-                        await expect(
-                            client.callTool({
-                                name: 'get_document',
-                                arguments: {
-                                    categoryId: 'invalid-id',
-                                },
-                            }),
-                        ).rejects.toThrowError("Invalid enum value. Expected 'developers', received 'invalid-id'")
+                    it('에러를 응답한다', async () => {
+                        const result = (await client.callTool({
+                            name: 'get_document',
+                            arguments: {
+                                categoryId: 'invalid-id',
+                            },
+                        })) as CallToolResult
+
+                        const response = result.content[0]
+
+                        expect(result.isError).toBe(true)
+                        expect(response.type).toEqual('text')
+                        if (response.type === 'text') {
+                            expect(response.text).toContain('Input validation error')
+                        }
                     })
                 })
 
@@ -90,8 +95,10 @@ describe('payments-mcp', () => {
                         const response = content[0]
 
                         expect(response.type).toEqual('text')
-                        expect(response.text).toContain('# NaverPay Developer center')
-                        expect(response.text).toContain('](/docs/common/authentication.md)')
+                        if (response.type === 'text') {
+                            expect(response.text).toContain('# NaverPay Developer center')
+                            expect(response.text).toContain('](/docs/common/authentication.md)')
+                        }
                     })
                 })
 
@@ -110,9 +117,11 @@ describe('payments-mcp', () => {
                             const response = content[0]
 
                             expect(response.type).toEqual('text')
-                            expect(response.text).toEqual(
-                                'The requested document was not found. Please check the path and try again.',
-                            )
+                            if (response.type === 'text') {
+                                expect(response.text).toEqual(
+                                    'The requested document was not found. Please check the path and try again.',
+                                )
+                            }
                         })
                     })
 
@@ -130,9 +139,11 @@ describe('payments-mcp', () => {
                             const response = content[0]
 
                             expect(response.type).toEqual('text')
-                            expect(response.text).toMatch(
-                                /Failed to fetch document from .* \(content-type: text\/html; charset=utf-8\)/,
-                            )
+                            if (response.type === 'text') {
+                                expect(response.text).toMatch(
+                                    /Failed to fetch document from .* \(content-type: text\/html; charset=utf-8\)/,
+                                )
+                            }
                         })
                     })
 
@@ -149,7 +160,9 @@ describe('payments-mcp', () => {
                         const response = content[0]
 
                         expect(response.type).toEqual('text')
-                        expect(response.text).toContain('# 인증')
+                        if (response.type === 'text') {
+                            expect(response.text).toContain('# 인증')
+                        }
                     })
                 })
 
@@ -167,7 +180,9 @@ describe('payments-mcp', () => {
                         const response = content[0]
 
                         expect(response.type).toEqual('text')
-                        expect(response.text).toMatch(/Failed to fetch document from .* \(status: 500\)/)
+                        if (response.type === 'text') {
+                            expect(response.text).toMatch(/Failed to fetch document from .* \(status: 500\)/)
+                        }
                     })
                 })
 
@@ -185,13 +200,15 @@ describe('payments-mcp', () => {
                         const response = content[0]
 
                         expect(response.type).toEqual('text')
-                        expect(response.text).toEqual('The request timed out. Please try again later.')
+                        if (response.type === 'text') {
+                            expect(response.text).toEqual('The request timed out. Please try again later.')
+                        }
                     })
                 })
 
                 describe('캐시된 문서가 존재한다면', () => {
                     beforeEach(async () => {
-                        const filePath = path.resolve(__dirname, './__fixtures__/developers/cached/sample-doc.md')
+                        const filePath = path.resolve(currentDir, './__fixtures__/developers/cached/sample-doc.md')
                         const dir = path.dirname(filePath)
 
                         await mkdir(dir, {recursive: true})
@@ -221,36 +238,50 @@ describe('payments-mcp', () => {
                         const response = content[0]
 
                         expect(response.type).toEqual('text')
-                        expect(response.text).toEqual('# Cached Document\n\nThis is cached content.')
+                        if (response.type === 'text') {
+                            expect(response.text).toEqual('# Cached Document\n\nThis is cached content.')
+                        }
                     })
                 })
             })
 
             describe('search_documents()', () => {
                 describe('categoryId가 잘못된 값이라면', () => {
-                    it('McpError를 던진다', async () => {
-                        await expect(
-                            client.callTool({
-                                name: 'search_documents',
-                                arguments: {
-                                    categoryId: 'invalid-id',
-                                    query: '인증 요청',
-                                },
-                            }),
-                        ).rejects.toThrowError("Invalid enum value. Expected 'developers', received 'invalid-id'")
+                    it('에러를 응답한다', async () => {
+                        const result = (await client.callTool({
+                            name: 'search_documents',
+                            arguments: {
+                                categoryId: 'invalid-id',
+                                query: '인증 요청',
+                            },
+                        })) as CallToolResult
+
+                        const response = result.content[0]
+
+                        expect(result.isError).toBe(true)
+                        expect(response.type).toEqual('text')
+                        if (response.type === 'text') {
+                            expect(response.text).toContain('Input validation error')
+                        }
                     })
                 })
 
                 describe('query 필드에 값이 없다면', () => {
-                    it('McpError를 던진다', async () => {
-                        await expect(
-                            client.callTool({
-                                name: 'search_documents',
-                                arguments: {
-                                    categoryId: 'developers',
-                                },
-                            }),
-                        ).rejects.toThrowError('Invalid arguments for tool search_documents')
+                    it('에러를 응답한다', async () => {
+                        const result = (await client.callTool({
+                            name: 'search_documents',
+                            arguments: {
+                                categoryId: 'developers',
+                            },
+                        })) as CallToolResult
+
+                        const response = result.content[0]
+
+                        expect(result.isError).toBe(true)
+                        expect(response.type).toEqual('text')
+                        if (response.type === 'text') {
+                            expect(response.text).toContain('Invalid arguments for tool search_documents')
+                        }
                     })
                 })
 
@@ -267,12 +298,21 @@ describe('payments-mcp', () => {
                     const {content} = result as CallToolResult
 
                     expect(content.length).toBeLessThanOrEqual(3)
+
                     expect(content[0].type).toEqual('text')
-                    expect(content[0].text).toContain('# API URL 형식')
+                    if (content[0].type === 'text') {
+                        expect(content[0].text).toContain('# API URL 형식')
+                    }
+
                     expect(content[1].type).toEqual('text')
-                    expect(content[1].text).toContain('# 인증')
+                    if (content[1].type === 'text') {
+                        expect(content[1].text).toContain('# 인증')
+                    }
+
                     expect(content[2].type).toEqual('text')
-                    expect(content[2].text).toContain('# 방화벽')
+                    if (content[2].type === 'text') {
+                        expect(content[2].text).toContain('# 방화벽')
+                    }
                 })
             })
         })

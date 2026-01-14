@@ -7,10 +7,6 @@
 import {CallToolResult} from '@modelcontextprotocol/sdk/types.js'
 import {z} from 'zod'
 
-export interface McpServerRunner {
-    readonly start: () => Promise<void>
-}
-
 export interface ToolDefinition {
     readonly name: string
     readonly description: {

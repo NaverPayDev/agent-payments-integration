@@ -6,11 +6,14 @@
 
 import {Server} from 'http'
 import path from 'path'
+import {fileURLToPath} from 'url'
 
 import express from 'express'
 
 import logger from './logger.js'
 import {TestServer} from './types.js'
+
+const currentDir = path.dirname(fileURLToPath(import.meta.url))
 
 function createExpressApp() {
     const app = express()
@@ -22,7 +25,7 @@ function createExpressApp() {
         })
         next()
     })
-    const fixturesPath = path.resolve(__dirname, '../__fixtures__')
+    const fixturesPath = path.resolve(currentDir, '../__fixtures__')
     app.use(express.static(fixturesPath))
     app.get(/.*\/index$/, (_, res) => {
         res.setHeader('content-type', 'text/html')
@@ -65,7 +68,7 @@ function stopServer(server: Server): Promise<void> {
     })
 }
 
-export function createTestServer(port: number = 3000): TestServer {
+export function createTestServer(port: number = 3001): TestServer {
     let server: Server | null = null
 
     return {

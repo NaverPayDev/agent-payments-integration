@@ -9,8 +9,8 @@ import {z} from 'zod'
 import logger from '../../infrastructure/logger.js'
 import {ToolDefinition} from '../../infrastructure/types.js'
 import {categories} from './config.js'
-import {readDocument} from './servies/read.js'
-import {searchDocuments} from './servies/search/search.js'
+import {readDocument} from './services/read.js'
+import {searchDocuments} from './services/search/search.js'
 
 const categoryIdSchema = z
     .enum(categories.map((c) => c.id) as [string, ...string[]])

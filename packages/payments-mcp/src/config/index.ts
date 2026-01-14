@@ -5,14 +5,14 @@
  */
 
 import packageJson from '../../package.json' with {type: 'json'}
-import endpoints from './endpoints.js'
-import {getEnvironment} from './environment.js'
-import {AppConfig} from './types.js'
+import {AppConfig, Environment} from './types.js'
 
-const environment = getEnvironment()
+function env(key: string) {
+    return process.env[key]
+}
 
 const config: AppConfig = {
-    env: environment,
+    env: (env('NODE_ENV') as Environment) || 'production',
     server: {
         name: '네이버페이(Npay) Payments MCP',
         version: packageJson.version,
@@ -21,7 +21,11 @@ const config: AppConfig = {
         name: '@naverpay/payments-mcp',
         stream: 'stderr',
     },
-    endpoint: endpoints(environment),
+    endpoint: {
+        developers: {
+            docs: env('NPAY_DEVELOPERS_DOCS_URL') || 'https://docs.pay.naver.com',
+        },
+    },
 }
 
 export default config

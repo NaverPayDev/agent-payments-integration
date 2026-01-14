@@ -6,6 +6,8 @@
 
 import {LoggerOptions} from '../infrastructure/types.js'
 
+export type Environment = 'development' | 'production'
+
 export interface Endpoints {
     readonly developers: {
         readonly docs: string
@@ -20,9 +22,4 @@ export interface AppConfig {
     }
     readonly logger: LoggerOptions
     readonly endpoint: Endpoints
-}
-
-export enum Environment {
-    Development = 'development',
-    Production = 'production',
 }

@@ -13,7 +13,7 @@ jobs:
     release-rc:
         name: 🚀 Release RC
         if: ${{ !contains(github.event.head_commit.message, '[skip release action]') }}
-        runs-on: ${{ github.server_url == 'https://github.com' && 'ubuntu-latest' || 'self-hosted' }}
+        runs-on: ubuntu-latest
         permissions:
             contents: write
             packages: write
@@ -25,11 +25,9 @@ jobs:
                   fetch-depth: 0
 
             - name: 🔐 마스킹
-              if: github.server_url == 'https://github.com'
               run: echo "::add-mask::${{ secrets.NPM_TOKEN }}"
 
             - name: 🛠️ 환경 설정
-              if: github.server_url == 'https://github.com'
               uses: ./.github/actions/setup-env
               with:
                   setup-npm-auth: 'true'

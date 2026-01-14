@@ -6,7 +6,7 @@
 
 import {describe, it, expect} from 'vitest'
 
-import {tokenize, processTerm} from '../../../../src/domains/documents/servies/search/tokenize.js'
+import {tokenize, processTerm} from '../../../../src/domains/documents/services/search/tokenize.js'
 
 describe('tokenize', () => {
     describe('tokenize()', () => {

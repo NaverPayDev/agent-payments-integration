@@ -5,13 +5,18 @@
  * Apache-2.0
  */
 
-import appConfig from './config/app.js'
+import {StdioServerTransport} from '@modelcontextprotocol/sdk/server/stdio.js'
+
+import config from './config/index.js'
 import logger from './infrastructure/logger.js'
-import {setupMcpServer} from './infrastructure/server.js'
+import {createServer} from './infrastructure/server.js'
 
 async function main() {
-    const server = setupMcpServer(appConfig)
-    await server.start()
+    logger.info(`⚙️ Application configuration: ${JSON.stringify(config)}`)
+    const server = createServer()
+    const transport = new StdioServerTransport()
+    await server.connect(transport)
+    logger.info(`🔌 Npay Payments MCP is running on stdio. (env: ${config.env})`)
 }
 
 main().catch((err) => {
