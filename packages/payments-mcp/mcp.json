@@ -1,0 +1,18 @@
+{
+    "mcpServers": {
+        "npay-payments-test": {
+            "type": "stdio",
+            "command": "vite-node",
+            "args": ["src/index.ts"],
+            "env": {
+                "NODE_ENV": "development",
+                "NPAY_DEVELOPERS_DOCS_URL": "http://localhost:3001/developers"
+            }
+        },
+        "npay-payments": {
+            "type": "stdio",
+            "command": "vite-node",
+            "args": ["src/index.ts"]
+        }
+    }
+}

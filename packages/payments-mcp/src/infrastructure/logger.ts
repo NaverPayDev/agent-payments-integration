@@ -4,7 +4,7 @@
  * Apache-2.0
  */
 
-import appConfig from '../config/app.js'
+import config from '../config/index.js'
 import {LogLevel, LoggerOptions, Logger} from './types.js'
 
 function errorMessage(error: Error): string {
@@ -37,4 +37,4 @@ export function createLogger({name, stream}: LoggerOptions): Logger {
     }
 }
 
-export default createLogger(appConfig.logger)
+export default createLogger(config.logger)

@@ -4,6 +4,7 @@
  * Apache-2.0
  */
 
+import logger from './logger.js'
 import {CacheItem} from './types.js'
 
 const cache = new Map<string, CacheItem>()
@@ -34,8 +35,10 @@ function evict(): void {
 export async function withCache<T>(key: string, fetcher: () => Promise<T>, ttlMs: number = 300_000): Promise<T> {
     const cachedData = getCachedData<T>(key)
     if (cachedData !== null) {
+        logger.info(`Cache hit: ${key}`)
         return cachedData
     }
+    logger.info(`Cache miss: ${key}`)
     evict()
     const data = await fetcher()
     setCacheData(key, data, ttlMs)

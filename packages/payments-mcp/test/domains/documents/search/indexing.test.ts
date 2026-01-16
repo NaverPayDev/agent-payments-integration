@@ -6,7 +6,7 @@
 
 import {describe, it, expect} from 'vitest'
 
-import {getSearchIndex} from '../../../../src/domains/documents/servies/search/indexing.js'
+import {getSearchIndex} from '../../../../src/domains/documents/services/search/indexing.js'
 
 describe('indexes', () => {
     const categoryId = 'developers'

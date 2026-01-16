@@ -13,7 +13,7 @@ jobs:
     release-rc:
         name: 🚀 Release RC
         if: ${{ !contains(github.event.head_commit.message, '[skip release action]') }}
-        runs-on: ${{ github.server_url == 'https://github.com' && 'ubuntu-latest' || 'self-hosted' }}
+        runs-on: ubuntu-latest
         permissions:
             contents: write
             packages: write
@@ -25,11 +25,9 @@ jobs:
                   fetch-depth: 0
 
             - name: 🔐 마스킹
-              if: github.server_url == 'https://github.com'
               run: echo "::add-mask::${{ secrets.NPM_TOKEN }}"
 
             - name: 🛠️ 환경 설정
-              if: github.server_url == 'https://github.com'
               uses: ./.github/actions/setup-env
               with:
                   setup-npm-auth: 'true'
@@ -37,6 +35,18 @@ jobs:
 
             - name: 🧪 CI 수행
               uses: ./.github/actions/run-ci
+
+            - name: 📙 명사 사전 업데이트
+              run: |
+                  cd scripts/korean-noun-dictionary
+                  just install
+                  curl -o llms-full.txt https://docs.pay.naver.com/llms-full.txt
+                  just run llms-full.txt
+                  cp out/noun_dictionary.json ../../packages/payments-mcp/src/domains/documents/services/search/config/
+                  rm llms-full.txt
+                  cd ../..
+                  pnpm prettier:fix
+                  echo "✅ 명사 사전 업데이트 완료"
 
             - name: 🔧 Git 설정
               run: |
@@ -61,6 +71,7 @@ jobs:
                     git add packages/*/package.json 2>/dev/null || true
                     git add packages/*/CHANGELOG.md 2>/dev/null || true
                     git add packages/*/NOTICE.md 2>/dev/null || true
+                    git add packages/*/src/**/noun_dictionary.json 2>/dev/null || true
                     git add scripts/*/package.json 2>/dev/null || true
                     git add scripts/*/CHANGELOG.md 2>/dev/null || true
                     git add scripts/*/NOTICE.md 2>/dev/null || true

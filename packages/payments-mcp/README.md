@@ -86,7 +86,7 @@ pnpm build
 pnpm start
 ```
 
-로컬 테스트 서버는 `http://localhost:3000`로 실행됩니다.
+로컬 테스트 서버는 `http://localhost:3001`로 실행됩니다.
 
 ## 기여하기
 

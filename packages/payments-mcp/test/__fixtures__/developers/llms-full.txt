@@ -8,16 +8,16 @@
 
 ### common
 
-- [인증](http://localhost:3000/developers/docs/common/authentication.md): 이 문서는 네이버페이 API 인증 방식과 요청 헤더 구성 방법을 안내합니다.
-- [하위 호환성](http://localhost:3000/developers/docs/common/backward-compatibility.md): 이 문서는 네이버페이 API의 하위 호환성 정책과 변경 기준을 안내합니다.
-- [변경 이력](http://localhost:3000/developers/docs/common/change-log.md): 이 문서는 네이버페이 API의 변경 이력과 주요 업데이트 사항을 안내합니다.
-- [방화벽](http://localhost:3000/developers/docs/common/firewall.md): 이 문서는 네이버페이 API 연동 시 필요한 방화벽 설정 방법을 안내합니다.
-- [HTTP Status Code](http://localhost:3000/developers/docs/common/http-status-code.md): 이 문서는 네이버페이 API에서 사용하는 HTTP 상태 코드와 의미를 안내합니다.
-- [API 멱등성](http://localhost:3000/developers/docs/common/idempotency.md): 이 문서는 네이버페이 API의 멱등성 처리 방식과 관련 헤더 사용법을 안내합니다.
-- [온라인 결제 연동 개요](http://localhost:3000/developers/docs/common/online-payment-overview.md): 이 문서는 온라인 결제 연동의 전체적인 개요와 주요 흐름을 안내합니다.
-- [플랫폼 지원환경](http://localhost:3000/developers/docs/common/platform-support.md): 이 문서는 네이버페이 API의 지원 플랫폼 및 브라우저 환경을 안내합니다.
-- [기본 응답 형식](http://localhost:3000/developers/docs/common/response-format.md): 이 문서는 네이버페이 API의 기본 응답 데이터 구조와 예시를 안내합니다.
-- [API URL 형식](http://localhost:3000/developers/docs/common/url-format.md): 이 문서는 네이버페이 API의 URL 형식과 호출 규칙을 안내합니다.
+- [인증](http://localhost:3001/developers/docs/common/authentication.md): 이 문서는 네이버페이 API 인증 방식과 요청 헤더 구성 방법을 안내합니다.
+- [하위 호환성](http://localhost:3001/developers/docs/common/backward-compatibility.md): 이 문서는 네이버페이 API의 하위 호환성 정책과 변경 기준을 안내합니다.
+- [변경 이력](http://localhost:3001/developers/docs/common/change-log.md): 이 문서는 네이버페이 API의 변경 이력과 주요 업데이트 사항을 안내합니다.
+- [방화벽](http://localhost:3001/developers/docs/common/firewall.md): 이 문서는 네이버페이 API 연동 시 필요한 방화벽 설정 방법을 안내합니다.
+- [HTTP Status Code](http://localhost:3001/developers/docs/common/http-status-code.md): 이 문서는 네이버페이 API에서 사용하는 HTTP 상태 코드와 의미를 안내합니다.
+- [API 멱등성](http://localhost:3001/developers/docs/common/idempotency.md): 이 문서는 네이버페이 API의 멱등성 처리 방식과 관련 헤더 사용법을 안내합니다.
+- [온라인 결제 연동 개요](http://localhost:3001/developers/docs/common/online-payment-overview.md): 이 문서는 온라인 결제 연동의 전체적인 개요와 주요 흐름을 안내합니다.
+- [플랫폼 지원환경](http://localhost:3001/developers/docs/common/platform-support.md): 이 문서는 네이버페이 API의 지원 플랫폼 및 브라우저 환경을 안내합니다.
+- [기본 응답 형식](http://localhost:3001/developers/docs/common/response-format.md): 이 문서는 네이버페이 API의 기본 응답 데이터 구조와 예시를 안내합니다.
+- [API URL 형식](http://localhost:3001/developers/docs/common/url-format.md): 이 문서는 네이버페이 API의 URL 형식과 호출 규칙을 안내합니다.
 
 ---
 
@@ -163,7 +163,7 @@ X-NaverPay-Idempotency-Key: {Idempotency Key}
 | 400              | Bad Request, 요청을 처리할 수 없는 경우                                                            |
 | 401              | Unauthorized, 인증키가 잘못된 경우                                                                 |
 | 404              | Not Found, 요청 resource 가 존재하지 않는 경우                                                     |
-| 409              | Conflict, 중복된 요청인 경우 ([API 멱등성 참조](http://localhost:3000/developers/docs/common/idempotency.md)) |
+| 409              | Conflict, 중복된 요청인 경우 ([API 멱등성 참조](http://localhost:3001/developers/docs/common/idempotency.md)) |
 | 503              | Service Unavailable, 서비스 점검중인 경우                                                          |
 | 5xx              | Server Errors, 네이버페이 서버에 오류가 있는 경우 ( 매우 드물게 발생 )                             |
 

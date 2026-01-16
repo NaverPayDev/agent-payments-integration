@@ -3,7 +3,7 @@
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/NaverPayDev/agent-payments-integration/blob/main/CONTRIBUTING.md)
 
-AI 에이전트를 위한 네이버페이(Npay) 통합 인터페이스를 제공합니다.
+AI 에이전트를 위한 네이버페이(Npay) 결제 도메인의 통합 인터페이스를 제공합니다.
 
 ## 패키지
 

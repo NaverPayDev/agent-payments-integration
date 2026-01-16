@@ -8,14 +8,13 @@ on:
 jobs:
     ci:
         name: 🧪 CI
-        runs-on: ${{ github.server_url == 'https://github.com' && 'ubuntu-latest' || 'self-hosted' }}
+        runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v4
               with:
                   fetch-depth: 0
 
             - name: 🛠️ 환경 설정
-              if: github.server_url == 'https://github.com'
               uses: ./.github/actions/setup-env
 
             - name: 🧪 CI 수행

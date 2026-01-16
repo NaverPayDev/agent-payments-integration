@@ -4,7 +4,7 @@
  * Apache-2.0
  */
 
-import appConfig from '../../config/app.js'
+import config from '../../config/index.js'
 import {DocumentCategory} from './types.js'
 
 export const categories: DocumentCategory[] = [
@@ -12,7 +12,7 @@ export const categories: DocumentCategory[] = [
         id: 'developers',
         name: '네이버페이 개발자센터',
         description: '네이버페이 연동 가이드 및 API 문서',
-        baseUrl: appConfig.endpoint.developers.docs,
+        baseUrl: config.endpoint.developers.docs,
         overview: '/llms.txt',
     },
 ]

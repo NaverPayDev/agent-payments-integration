@@ -10,7 +10,7 @@ describe('TestServer', () => {
     describe('static', () => {
         describe('파일이 존재하면', () => {
             it('파일을 응답한다', async () => {
-                const response = await fetch(`http://localhost:3000/developers/llms.txt`)
+                const response = await fetch(`http://localhost:3001/developers/llms.txt`)
                 const content = await response.text()
 
                 expect(response.status).toEqual(200)
@@ -20,7 +20,7 @@ describe('TestServer', () => {
 
         describe('파일이 존재하지 않으면', () => {
             it('404 코드를 응답한다', async () => {
-                const response = await fetch(`http://localhost:3000/developers/not-found.txt`)
+                const response = await fetch(`http://localhost:3001/developers/not-found.txt`)
                 const content = await response.text()
 
                 expect(response.status).toEqual(404)
@@ -31,7 +31,7 @@ describe('TestServer', () => {
 
     describe('/error.md', () => {
         it('500 코드를 응답한다', async () => {
-            const response = await fetch(`http://localhost:3000/developers/error.md`)
+            const response = await fetch(`http://localhost:3001/developers/error.md`)
             const content = await response.text()
 
             expect(response.status).toEqual(500)
@@ -42,7 +42,7 @@ describe('TestServer', () => {
     describe('/timeout.md', () => {
         it('지연 후 응답한다', async () => {
             const start = Date.now()
-            const response = await fetch('http://localhost:3000/developers/timeout.md?ms=500')
+            const response = await fetch('http://localhost:3001/developers/timeout.md?ms=500')
             const elapsed = Date.now() - start
             const content = await response.text()
 
@@ -54,7 +54,7 @@ describe('TestServer', () => {
 
     describe('/index', () => {
         it('html 페이지를 응답한다', async () => {
-            const response = await fetch(`http://localhost:3000/developers/index`)
+            const response = await fetch(`http://localhost:3001/developers/index`)
             const content = await response.text()
 
             expect(response.status).toEqual(200)

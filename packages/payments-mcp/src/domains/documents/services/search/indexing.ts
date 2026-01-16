@@ -6,6 +6,7 @@
 
 import MiniSearch from 'minisearch'
 
+import logger from '../../../../infrastructure/logger.js'
 import {readDocument} from '../read.js'
 import {tokenize, processTerm} from './tokenize.js'
 import {DocumentChunk} from './types.js'
@@ -32,6 +33,7 @@ function splitDocument(text: string): DocumentChunk[] {
 
 export async function getSearchIndex(categoryId: string): Promise<MiniSearch<DocumentChunk>> {
     if (searchIndexByCategory.has(categoryId)) {
+        logger.info(`Search index cache hit: ${categoryId}`)
         return searchIndexByCategory.get(categoryId)!
     }
     const text = await readDocument(categoryId, 'llms-full.txt')
@@ -49,5 +51,6 @@ export async function getSearchIndex(categoryId: string): Promise<MiniSearch<Doc
     })
     miniSearch.addAll(documents)
     searchIndexByCategory.set(categoryId, miniSearch)
+    logger.info(`Built search index for ${categoryId}: ${documents.length} chunks`)
     return miniSearch
 }

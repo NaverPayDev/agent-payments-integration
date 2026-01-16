@@ -34,27 +34,29 @@
     "scripts": {
         "clean": "rm -rf build",
         "prebuild": "pnpm clean",
-        "build": "tsc && node -e \"require('fs').chmodSync('build/index.js', '755')\"",
-        "test": "vitest run --reporter=verbose",
-        "test:watch": "vitest watch --reporter=verbose",
+        "build": "tsc -p tsconfig.build.json && node -e \"require('fs').chmodSync('build/index.js', '755')\"",
+        "test": "NODE_ENV=development vitest run --reporter=verbose",
+        "test:watch": "NODE_ENV=development vitest watch --reporter=verbose",
+        "test:coverage": "NODE_ENV=development vitest run --coverage",
         "start": "concurrently 'pnpm run start:test-server' 'pnpm run start:inspector:dev'",
-        "start:inspector": "npx @modelcontextprotocol/inspector vite-node src/index.ts",
-        "start:inspector:dev": "NODE_ENV=development npx @modelcontextprotocol/inspector vite-node src/index.ts",
-        "start:test-server": "vite-node test/__helpers__/start-test-server.ts",
+        "start:inspector": "npx @modelcontextprotocol/inspector --config mcp.json --server npay-payments",
+        "start:inspector:dev": "npx @modelcontextprotocol/inspector --config mcp.json --server npay-payments-test",
+        "start:test-server": "NODE_ENV=development vite-node test/__helpers__/start-test-server.ts",
         "notice": "npx generate-license-file --input package.json --output NOTICE.md --overwrite --ci --no-spinner --eol lf"
     },
     "devDependencies": {
-        "@types/express": "^5.0.3",
-        "@types/node": "^24.0.8",
-        "concurrently": "^9.2.0",
-        "express": "^5.1.0",
-        "generate-license-file": "^4.0.0",
-        "vite-node": "^3.2.4",
-        "vitest": "^3.2.4"
+        "@types/express": "^5.0.6",
+        "@types/node": "^25.0.8",
+        "@vitest/coverage-v8": "^4.0.17",
+        "concurrently": "^9.2.1",
+        "express": "^5.2.1",
+        "generate-license-file": "^4.1.1",
+        "vite-node": "^5.2.0",
+        "vitest": "^4.0.17"
     },
     "dependencies": {
-        "@modelcontextprotocol/sdk": "^1.13.2",
-        "minisearch": "^7.1.2",
-        "zod": "^3.25.67"
+        "@modelcontextprotocol/sdk": "^1.25.2",
+        "minisearch": "^7.2.0",
+        "zod": "^4.3.5"
     }
 }
