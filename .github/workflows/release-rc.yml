@@ -15,6 +15,7 @@ jobs:
         if: ${{ !contains(github.event.head_commit.message, '[skip release action]') }}
         runs-on: ubuntu-latest
         permissions:
+            id-token: write
             contents: write
             packages: write
         steps:
@@ -24,14 +25,8 @@ jobs:
                   ssh-key: ${{ secrets.DEPLOY_KEY }}
                   fetch-depth: 0
 
-            - name: 🔐 마스킹
-              run: echo "::add-mask::${{ secrets.NPM_TOKEN }}"
-
             - name: 🛠️ 환경 설정
               uses: ./.github/actions/setup-env
-              with:
-                  setup-npm-auth: 'true'
-                  npm-token: ${{ secrets.NPM_TOKEN }}
 
             - name: 🧪 CI 수행
               uses: ./.github/actions/run-ci
@@ -55,39 +50,27 @@ jobs:
                   git remote set-url origin git@github.com:${{ github.repository }}.git
 
             - name: 📝 Commit RC 버전
+              id: commit
               run: |
                   if [ ! -f ".changeset/pre.json" ]; then
                     pnpm changeset pre enter rc
                     echo "✅ Pre-release 활성화"
-                  else
-                    echo "ℹ️ 현재 Pre-release"
                   fi
 
                   pnpm changeset version
                   pnpm install --frozen-lockfile
                   pnpm notice
 
-                  if ! git diff --quiet; then
-                    git add .changeset/ 2>/dev/null || true
-                    git add packages/*/package.json 2>/dev/null || true
-                    git add packages/*/CHANGELOG.md 2>/dev/null || true
-                    git add packages/*/NOTICE.md 2>/dev/null || true
-                    git add packages/*/src/**/noun_dictionary.json 2>/dev/null || true
-                    git add scripts/*/package.json 2>/dev/null || true
-                    git add scripts/*/CHANGELOG.md 2>/dev/null || true
-                    git add scripts/*/NOTICE.md 2>/dev/null || true
-
-                    git commit -m "🚀 release: bump rc versions [skip release action]"
-                    
-                    if ! git push origin main; then
-                      echo "❌ 다른 변경사항이 추가되어 다음 배포에서 함께 처리됩니다."
-                      exit 1
-                    fi
-                    echo "✅ Commit RC 버전"
-                  else
+                  if git diff --quiet; then
                     echo "ℹ️ 업데이트할 내용이 없습니다"
+                    echo "skip=true" >> $GITHUB_OUTPUT
+                  else
+                    git add .
+                    git commit -m "🚀 release: bump rc versions [skip release action]"
+                    git push origin main
+                    echo "✅ Commit 완료"
                   fi
 
             - name: 🚀 RC 버전 배포
-              run: |
-                  pnpm release:canary
+              if: steps.commit.outputs.skip != 'true'
+              run: pnpm release:canary
