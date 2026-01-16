@@ -63,11 +63,7 @@ jobs:
                     echo "ℹ️ 업데이트할 내용이 없습니다"
                     echo "skip=true" >> $GITHUB_OUTPUT
                   else
-                    git add .changeset/ packages/*/package.json packages/*/CHANGELOG.md \
-                            packages/*/NOTICE.md packages/*/src/**/noun_dictionary.json \
-                            scripts/*/package.json scripts/*/CHANGELOG.md scripts/*/NOTICE.md \
-                            2>/dev/null || true
-
+                    git add .
                     git commit -m "🎉 release: bump stable versions [skip release action]"
                     git push origin main
                     echo "✅ Commit 완료"
