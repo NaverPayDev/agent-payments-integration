@@ -1,0 +1,12 @@
+{
+  "mode": "pre",
+  "tag": "rc",
+  "initialVersions": {
+    "@naverpay/payments-mcp": "1.0.1",
+    "@naverpay/korean-noun-dictionary": "1.0.1"
+  },
+  "changesets": [
+    "purple-phones-talk",
+    "strict-olives-visit"
+  ]
+}

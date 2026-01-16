@@ -3,7 +3,7 @@ https://www.npmjs.com/package/generate-license-file
 
 The following npm package may be included in this product:
 
- - minisearch@7.1.2
+ - minisearch@7.2.0
 
 This package contains the following license:
 
@@ -19,7 +19,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 The following npm package may be included in this product:
 
- - @modelcontextprotocol/sdk@1.13.2
+ - @modelcontextprotocol/sdk@1.25.2
 
 This package contains the following license:
 
@@ -49,7 +49,7 @@ SOFTWARE.
 
 The following npm package may be included in this product:
 
- - zod@3.25.67
+ - zod@4.3.5
 
 This package contains the following license:
 
