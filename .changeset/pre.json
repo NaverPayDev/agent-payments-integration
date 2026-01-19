@@ -6,6 +6,7 @@
     "@naverpay/korean-noun-dictionary": "1.0.1"
   },
   "changesets": [
+    "eighty-ghosts-write",
     "purple-phones-talk",
     "real-ravens-guess",
     "strict-olives-visit"
