@@ -28,6 +28,9 @@ jobs:
             - name: 🛠️ 환경 설정
               uses: ./.github/actions/setup-env
 
+            - name: 📦 의존성 설치
+              run: pnpm install
+
             - name: 🔍 릴리스 타입 감지
               id: detect
               run: |
