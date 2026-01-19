@@ -1,4 +1,4 @@
-name: Release Stable
+name: Release Stable (Version Bump)
 
 on:
     release:
@@ -9,13 +9,11 @@ concurrency:
     cancel-in-progress: false
 
 jobs:
-    release-stable:
-        name: 🎉 Release Stable
+    version-bump:
+        name: 🎉 Stable Version Bump
         runs-on: ubuntu-latest
         permissions:
-            id-token: write
             contents: write
-            packages: write
         steps:
             - uses: actions/checkout@v4
               with:
@@ -34,12 +32,11 @@ jobs:
                   cd scripts/korean-noun-dictionary
                   just install
                   curl -o llms-full.txt https://docs.pay.naver.com/llms-full.txt
-                  just run llms-full.txt
+                  just run llms-full.txt 2>&1 | tail -n 5
                   cp out/noun_dictionary.json ../../packages/payments-mcp/src/domains/documents/services/search/config/
                   rm llms-full.txt
                   cd ../..
                   pnpm prettier:fix
-                  echo "✅ 명사 사전 업데이트 완료"
 
             - name: 🔧 Git 설정
               run: |
@@ -47,32 +44,18 @@ jobs:
                   git config user.email "github-actions[bot]@users.noreply.github.com"
                   git remote set-url origin git@github.com:${{ github.repository }}.git
 
-            - name: 📝 Commit 정식 버전
-              id: commit
+            - name: 📝 Stable 버전 Commit
               run: |
                   if [ -f ".changeset/pre.json" ]; then
                     pnpm changeset pre exit
-                    echo "✅ Pre-release 종료"
                   fi
 
                   pnpm changeset version
-                  pnpm install --frozen-lockfile
+                  pnpm install
                   pnpm notice
 
-                  if git diff --quiet; then
-                    echo "ℹ️ 업데이트할 내용이 없습니다"
-                    echo "skip=true" >> $GITHUB_OUTPUT
-                  else
+                  if ! git diff --quiet; then
                     git add .
-                    git commit -m "🎉 release: bump stable versions [skip release action]"
+                    git commit -m "🎉 release: bump stable versions"
                     git push origin main
-                    echo "✅ Commit 완료"
                   fi
-
-            - name: 🎉 정식 버전 배포
-              if: steps.commit.outputs.skip != 'true'
-              run: pnpm release
-
-            - name: 🏷️ 태그 Push
-              if: steps.commit.outputs.skip != 'true'
-              run: git push --follow-tags
