@@ -1,20 +1,19 @@
-name: Manual Release
+name: Publish
 
 on:
+    push:
+        branches:
+            - main
     workflow_dispatch:
-        inputs:
-            ref:
-                description: '배포할 커밋/태그 (기본: main)'
-                required: false
-                default: 'main'
 
 concurrency:
     group: release
     cancel-in-progress: false
 
 jobs:
-    release:
-        name: 🔄 Manual Release
+    publish:
+        name: 🚀 Publish
+        if: github.event_name == 'workflow_dispatch' || startsWith(github.event.head_commit.message, '🚀 release:') == true || startsWith(github.event.head_commit.message, '🎉 release:') == true
         runs-on: ubuntu-latest
         permissions:
             id-token: write
@@ -23,7 +22,6 @@ jobs:
         steps:
             - uses: actions/checkout@v4
               with:
-                  ref: ${{ github.event.inputs.ref }}
                   ssh-key: ${{ secrets.DEPLOY_KEY }}
                   fetch-depth: 0
 
@@ -35,18 +33,18 @@ jobs:
               run: |
                   if [ -f ".changeset/pre.json" ]; then
                     echo "type=rc" >> $GITHUB_OUTPUT
-                    echo "📦 RC 릴리스 감지됨"
                   else
                     echo "type=stable" >> $GITHUB_OUTPUT
-                    echo "🎉 정식 릴리스 감지됨"
                   fi
 
-            - name: 🚀 RC 버전 배포
+            - name: 🚀 RC 배포
               if: steps.detect.outputs.type == 'rc'
               run: pnpm release:canary
 
-            - name: 🎉 정식 버전 배포
+            - name: 🎉 Stable 배포
               if: steps.detect.outputs.type == 'stable'
-              run: |
-                  pnpm release
-                  git push --follow-tags
+              run: pnpm release
+
+            - name: 🏷️ 태그 Push
+              if: steps.detect.outputs.type == 'stable'
+              run: git push --follow-tags
