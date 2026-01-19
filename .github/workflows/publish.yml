@@ -43,10 +43,14 @@ jobs:
             - name: 🚀 RC 배포
               if: steps.detect.outputs.type == 'rc'
               run: pnpm release:canary
+              env:
+                  NPM_CONFIG_PROVENANCE: true
 
             - name: 🎉 Stable 배포
               if: steps.detect.outputs.type == 'stable'
               run: pnpm release
+              env:
+                  NPM_CONFIG_PROVENANCE: true
 
             - name: 🏷️ 태그 Push
               if: steps.detect.outputs.type == 'stable'
