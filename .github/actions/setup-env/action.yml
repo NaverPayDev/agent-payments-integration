@@ -4,7 +4,7 @@ inputs:
     node-version:
         description: 'Node.js version to setup'
         required: true
-        default: '22'
+        default: '24'
     python-version:
         description: 'Python version to setup'
         required: true
