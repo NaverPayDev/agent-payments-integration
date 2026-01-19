@@ -26,27 +26,21 @@ jobs:
             - name: 🛠️ 환경 설정
               uses: ./.github/actions/setup-env
 
-            - name: 🧪 CI 수행
-              uses: ./.github/actions/run-ci
+            - name: 📦 의존성 설치
+              run: pnpm install
 
             - name: 📙 명사 사전 업데이트
               run: |
                   cd scripts/korean-noun-dictionary
                   just install
                   curl -o llms-full.txt https://docs.pay.naver.com/llms-full.txt
-                  just run llms-full.txt 2>&1 | tail -n 5
+                  just run llms-full.txt > /dev/null
                   cp out/noun_dictionary.json ../../packages/payments-mcp/src/domains/documents/services/search/config/
                   rm llms-full.txt
                   cd ../..
                   pnpm prettier:fix
 
-            - name: 🔧 Git 설정
-              run: |
-                  git config user.name "github-actions[bot]"
-                  git config user.email "github-actions[bot]@users.noreply.github.com"
-                  git remote set-url origin git@github.com:${{ github.repository }}.git
-
-            - name: 📝 RC 버전 Commit
+            - name: 📝 RC 버전 준비
               run: |
                   if [ ! -f ".changeset/pre.json" ]; then
                     pnpm changeset pre enter rc
@@ -56,6 +50,19 @@ jobs:
                   pnpm install
                   pnpm notice
 
+            - name: 🧪 CI 수행
+              uses: ./.github/actions/run-ci
+              with:
+                  skip-install: 'true'
+
+            - name: 🔧 Git 설정
+              run: |
+                  git config user.name "github-actions[bot]"
+                  git config user.email "github-actions[bot]@users.noreply.github.com"
+                  git remote set-url origin git@github.com:${{ github.repository }}.git
+
+            - name: 📤 Commit & Push
+              run: |
                   if ! git diff --quiet; then
                     git add .
                     git commit -m "🚀 release: bump rc versions"
