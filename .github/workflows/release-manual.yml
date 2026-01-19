@@ -1,0 +1,52 @@
+name: Manual Release
+
+on:
+    workflow_dispatch:
+        inputs:
+            ref:
+                description: '배포할 커밋/태그 (기본: main)'
+                required: false
+                default: 'main'
+
+concurrency:
+    group: release
+    cancel-in-progress: false
+
+jobs:
+    release:
+        name: 🔄 Manual Release
+        runs-on: ubuntu-latest
+        permissions:
+            id-token: write
+            contents: write
+            packages: write
+        steps:
+            - uses: actions/checkout@v4
+              with:
+                  ref: ${{ github.event.inputs.ref }}
+                  ssh-key: ${{ secrets.DEPLOY_KEY }}
+                  fetch-depth: 0
+
+            - name: 🛠️ 환경 설정
+              uses: ./.github/actions/setup-env
+
+            - name: 🔍 릴리스 타입 감지
+              id: detect
+              run: |
+                  if [ -f ".changeset/pre.json" ]; then
+                    echo "type=rc" >> $GITHUB_OUTPUT
+                    echo "📦 RC 릴리스 감지됨"
+                  else
+                    echo "type=stable" >> $GITHUB_OUTPUT
+                    echo "🎉 정식 릴리스 감지됨"
+                  fi
+
+            - name: 🚀 RC 버전 배포
+              if: steps.detect.outputs.type == 'rc'
+              run: pnpm release:canary
+
+            - name: 🎉 정식 버전 배포
+              if: steps.detect.outputs.type == 'stable'
+              run: |
+                  pnpm release
+                  git push --follow-tags
