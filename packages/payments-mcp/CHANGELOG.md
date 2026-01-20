@@ -1,5 +1,11 @@
 # @naverpay/payments-mcp
 
+## 1.1.0
+
+### Minor Changes
+
+-   d849b89: 코드 구조 개선 및 의존성 업데이트
+
 ## 1.1.0-rc.0
 
 ### Minor Changes
